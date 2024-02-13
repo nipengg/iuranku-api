@@ -14,6 +14,12 @@ class UserController extends Controller
     {
         $data = User::paginate($request->take);
 
-        return ResponseFormatter::success($data, 'Success Get User List');
+        return ResponseFormatter::success([
+            'data' => $data->items(),
+            'page' => $data->currentPage(),
+            'take' => $data->perPage(),
+            'total' => $data->total(),
+            'total_page' => ceil($data->total() / $data->perPage()),
+        ], 'Success Get User List');
     }
 }

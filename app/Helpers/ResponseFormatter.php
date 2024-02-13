@@ -30,5 +30,4 @@ class ResponseFormatter
 
     return response()->json(self::$response, self::$response['meta']['code']);
   }
-
 }
