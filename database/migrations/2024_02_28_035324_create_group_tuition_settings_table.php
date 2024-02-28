@@ -20,7 +20,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('group_id')->references('id')->on('groups');
-            $table->foreign('type_tuition_id')->references('id')->on('type_tuitions');
+            $table->foreign('type_tuition_id')->references('id')->on('tuition_types');
         });
     }
 
