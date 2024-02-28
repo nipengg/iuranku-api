@@ -27,7 +27,7 @@ class AuthController extends Controller
             $user = User::where('email', $data['email'])->first();
 
             if ($user->role == 'User') {
-                Alert::danger('Warning Title', 'User not Authorized');
+                Alert::error('User not Authorized', 'Access Denied');
                 return redirect()->route('login')->with('error_message', 'No Privileges. Not Authorized');
             }
 
