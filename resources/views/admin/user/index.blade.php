@@ -55,30 +55,19 @@
                                         <th>Phone</th>
                                         <th>Role</th>
                                         <th>Created At</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $item)
                                         <tr>
-                                            <td>{{ $item->name }}</td>
+                                            <td>
+                                                <a href="{{ route('admin.user.detail', Crypt::encryptString($item->id)) }}">{{ $item->name }}</a>
+                                            </td>
                                             <td>{{ $item->email }}</td>
                                             <td>{{ $item->address }}</td>
                                             <td>{{ $item->phone }}</td>
                                             <td>{{ $item->role }}</td>
                                             <td>{{ $item->created_at }}</td>
-                                            <td>
-                                                <a href="" class="action-icon">
-                                                    <button class="btn btn-invisible">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </button></a>
-                                                <form action="" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button class="btn btn-invisible">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

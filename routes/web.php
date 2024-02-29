@@ -29,6 +29,7 @@ Route::prefix('/admin')->group(function () {
 
     Route::prefix('/user')->group(function() {
         Route::get('/', [UserController::class, 'index'])->name('admin.user.index');
+        Route::get('/{ids}', [UserController::class, 'detail'])->name('admin.user.detail');
         Route::post('/import', [UserController::class, 'importExcel'])->name('admin.import.excel');
     });
 });
