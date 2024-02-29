@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 
 @section('content')
-
     <div class="row">
         <div class="page-title-box">
             <div class="page-title-right">
@@ -18,8 +17,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-hidden="true"></button>
                                 </div>
-                                <form action="" method="POST"
-                                    enctype="multipart/form-data">
+                                <form action="{{ route('admin.import.excel') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="modal-body">
                                         <label>Pilih file excel</label>
@@ -28,8 +26,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-light"
-                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-primary">Import</button>
                                     </div>
                                 </form>
@@ -58,11 +55,21 @@
                                         <th>Phone</th>
                                         <th>Role</th>
                                         <th>Created At</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+                                    @foreach ($data as $item)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ route('admin.user.detail', Crypt::encryptString($item->id)) }}">{{ $item->name }}</a>
+                                            </td>
+                                            <td>{{ $item->email }}</td>
+                                            <td>{{ $item->address }}</td>
+                                            <td>{{ $item->phone }}</td>
+                                            <td>{{ $item->role }}</td>
+                                            <td>{{ $item->created_at }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div> <!-- end preview-->
