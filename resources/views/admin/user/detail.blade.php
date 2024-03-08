@@ -103,27 +103,45 @@
                                 <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i> Personal Info
                                 </h5>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="mb-3">
-                                            <label for="firstname" class="form-label">First Name</label>
-                                            <input type="text" class="form-control" id="firstname"
-                                                placeholder="Enter first name">
+                                            <label for="name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" value="{{ $data->name }}"
+                                                placeholder="Name">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="lastname" class="form-label">Last Name</label>
-                                            <input type="text" class="form-control" id="lastname"
-                                                placeholder="Enter last name">
-                                        </div>
-                                    </div> <!-- end col -->
                                 </div> <!-- end row -->
+
+                                <div class="mb-3">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <div class="mt-1">
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="genderMale" name="gender" value="Male" class="form-check-input" @if($data->gender == 'Male') checked @endif required>
+                                            <label class="form-check-label" for="genderMale">Male</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" id="genderFemale" name="gender" value="Female" class="form-check-input" @if($data->gender == 'Female') checked @endif required>
+                                            <label class="form-check-label" for="genderFemale">Female</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label">Phone Number</label>
+                                            <input type="number" class="form-control" id="number" name="number" value="{{ $data->phone }}"
+                                                placeholder="Phone Number">
+                                        </div>
+                                    </div>
+                                </div> <!-- end row -->
+
 
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="mb-3">
-                                            <label for="userbio" class="form-label">Bio</label>
-                                            <textarea class="form-control" id="userbio" rows="4" placeholder="Write something..."></textarea>
+                                            <label for="address" class="form-label">Address</label>
+                                            <textarea class="form-control" id="address" name="address" rows="4" placeholder="Write something...">{{ $data->address }}</textarea>
                                         </div>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
@@ -132,7 +150,7 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="useremail" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="useremail"
+                                            <input type="email" class="form-control" id="useremail" value="{{ $data->email }}"
                                                 placeholder="Enter email">
                                             <span class="form-text text-muted"><small>If you want to change email please <a
                                                         href="javascript: void(0);">click</a> here.</small></span>

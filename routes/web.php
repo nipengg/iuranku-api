@@ -22,9 +22,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('/user')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('admin.user.index');
+            Route::get('create', [UserController::class, 'create'])->name('admin.user.create');
             Route::get('/{ids}', [UserController::class, 'detail'])->name('admin.user.detail');
+            Route::post('/store', [UserController::class, 'store'])->name('admin.user.store');
             Route::post('/import', [UserController::class, 'importExcel'])->name('admin.import.excel');
         });
     });
-
 });

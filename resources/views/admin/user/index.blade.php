@@ -5,7 +5,7 @@
         <div class="page-title-box">
             <div class="page-title-right">
                 <div class="d-flex">
-                    <a href="" class="btn btn-primary ms-1">Create User</a>
+                    <a href="{{ route('admin.user.create') }}" class="btn btn-primary ms-1">Create User</a>
                     <button type="button" class="btn btn-primary ms-1" data-bs-toggle="modal"
                         data-bs-target="#standard-modal">Import Excel</button>
                     <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog"
