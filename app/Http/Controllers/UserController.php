@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -20,6 +21,55 @@ class UserController extends Controller
         return view('admin.user.index', [
             'data' => $data
         ]);
+    }
+
+    public function create()
+    {
+        return view('admin.user.create');
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:50',
+            'phone' => 'required|max:12|unique:users',
+            'address' => 'required|max:250',
+            'gender' => 'required',
+            'email' => 'string|max:255|unique:users',
+            'address' => 'string|max:255',
+            'password' => 'string|confirmed|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+
+            $errorListItems = '';
+
+            foreach ($errors as $error) {
+                $errorListItems .= "<li>$error</li>";
+            }
+
+            $errorMessage = "<ul>$errorListItems</ul>";
+
+            Alert::html('Invalid Input', $errorMessage, 'error');
+
+            return redirect()->back()->withInput();
+        }
+
+        User::create([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'gender' => $data['gender'],
+            'email' => $data['email'],
+            'address' => $data['address'],
+            'password' => Hash::make($data['password']),
+            'role' => $data['role'],
+        ]);
+
+        Alert::success('Success!', 'User Stored');
+        return redirect()->route('admin.user.index');
     }
 
     public function detail($ids)
@@ -49,7 +99,7 @@ class UserController extends Controller
         $fileName = date('YmdHis') . '_' . 'Import.' . $file->getClientOriginalExtension();
 
         $file->move('import/user', $fileName);
-        
+
 
         try {
             Excel::import(new UsersImport, public_path('/import/user/' . $fileName));

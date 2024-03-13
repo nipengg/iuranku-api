@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Dashboard | Iuranku</title>
+    <title>Iuranku</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Iuranku Web App" name="description">
     <meta content="Iuranku" name="author">
@@ -37,9 +37,10 @@
         <div class="leftside-menu">
 
             <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-light">
+            <a href="{{ route('admin.dashboard') }}" class="logo text-center logo-light">
                 <span class="logo-lg">
-                    <img src="{{ asset('assets/admin-assets/images/logo.png') }}" alt="" height="16">
+                    IuranKu Logo
+                    {{-- <img src="{{ asset('assets/admin-assets/images/logo.png') }}" alt="" height="16"> --}}
                 </span>
                 <span class="logo-sm">
                     {{-- <img src="assets/images/logo_sm.png" alt="" height="16"> --}}
@@ -73,6 +74,13 @@
                         <a href="/admin/user" aria-expanded="false" class="side-nav-link">
                             <i class="uil-user"></i>
                             <span> User </span>
+                        </a>
+                    </li>
+
+                    <li class="side-nav-item">
+                        <a href="/admin/news" aria-expanded="false" class="side-nav-link">
+                            <i class="uil-newspaper"></i>
+                            <span> News </span>
                         </a>
                     </li>
                 </ul>
