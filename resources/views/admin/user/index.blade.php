@@ -43,7 +43,6 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title">User Master</h4>
                     <div class="tab-content">
                         <div class="tab-pane show active" id="buttons-table-preview">
                             <table id="datatable-buttons" class="table table-striped dt-responsive nowrap w-100">

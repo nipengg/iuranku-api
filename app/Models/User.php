@@ -46,4 +46,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function group_member()
+    {
+        return $this->hasMany(GroupMember::class, 'user_id', 'id');
+    }
 }
