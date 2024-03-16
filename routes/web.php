@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('admin.user.index');
             Route::get('/create', [UserController::class, 'create'])->name('admin.user.create');
             Route::get('/{ids}', [UserController::class, 'detail'])->name('admin.user.detail');
+            Route::post('/update/{ids}', [UserController::class, 'update'])->name('admin.user.update');
             Route::post('/store', [UserController::class, 'store'])->name('admin.user.store');
             Route::post('/import', [UserController::class, 'importExcel'])->name('admin.import.excel');
         });
@@ -34,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('admin.group.index');
             Route::get('/create', [GroupController::class, 'create'])->name('admin.group.create');
             Route::get('/{ids}', [GroupController::class, 'detail'])->name('admin.group.detail');
+            Route::post('/update/{ids}', [GroupController::class, 'update'])->name('admin.group.update');
             Route::post('/store', [GroupController::class, 'store'])->name('admin.group.store');
         });
 

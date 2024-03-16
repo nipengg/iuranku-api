@@ -83,6 +83,51 @@ class UserController extends Controller
         ]);
     }
 
+    public function update(Request $request, $ids)
+    {
+        $data = $request->all();
+        $id = Crypt::decryptString($ids);
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:50',
+            'phone' => 'required|max:12|unique:users,phone,' . $id,
+            'address' => 'required|max:250',
+            'gender' => 'required',
+            'email' => 'string|max:255|unique:users,email,' . $id,
+            'address' => 'string|max:255',
+            'role' => 'required',
+        ]);
+
+        if ($validator->fails()) 
+        {
+            $errors = $validator->errors()->all();
+
+            $errorListItems = '';
+
+            foreach ($errors as $error) {
+                $errorListItems .= "<li>$error</li>";
+            }
+
+            $errorMessage = "<ul>$errorListItems</ul>";
+
+            Alert::html('Invalid Input', $errorMessage, 'error');
+
+            return redirect()->back()->withInput();
+        }
+
+        User::where('id', $id)->update([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'gender' => $data['gender'],
+            'email' => $data['email'],
+            'address' => $data['address'],
+            'role' => $data['role'],
+        ]);
+
+        Alert::success('Success!', 'User Updated');
+        return redirect()->route('admin.user.detail', Crypt::encryptString($id));
+    }
+
     public function importExcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -108,6 +153,18 @@ class UserController extends Controller
             return redirect()->back();
         }
         Alert::success('User Import Success!', 'Data Inserted Successfully');
+        return redirect()->route('admin.user.index');
+    }
+
+    public function delete($ids)
+    {
+        $id = Crypt::decryptString($ids);
+
+        $data = User::findOrFail($id);
+
+        $data->delete();
+
+        Alert::success('Delete User Success!', 'User Deleted');
         return redirect()->route('admin.user.index');
     }
 }
