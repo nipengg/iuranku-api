@@ -35,8 +35,7 @@ class GroupController extends Controller
             'group_address' => 'required|max:250',
         ]);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             $errors = $validator->errors()->all();
 
             $errorListItems = '';
@@ -72,5 +71,49 @@ class GroupController extends Controller
         return view('admin.group.detail', [
             'data' => $data
         ]);
+    }
+
+    public function update(Request $request, $ids)
+    {
+        $data = $request->all();
+        $id  = Crypt::decryptString($ids);
+
+        $validator = Validator::make($request->all(), [
+            'group_name' => 'required|max:250|string',
+            'group_description' => 'max:500|string',
+            'group_address' => 'required|max:250|string'
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+
+            $errorListItems = '';
+
+            foreach ($errors as $error) {
+                $errorListItems .= "<li>$error</li>";
+            }
+
+            $errorMessage = "<ul>$errorListItems</ul>";
+
+            Alert::html('Invalid Input', $errorMessage, 'error');
+
+            return redirect()->back()->withInput();
+        }
+
+        try {
+            Group::where('id', $id)->update([
+                'group_name' => $data['group_name'],
+                'group_description' => $data['group_description'],
+                'group_address' => $data['group_address'],
+                'user_in' => Auth::user()->id,
+            ]);
+        } catch (\Throwable $th) {
+            Alert::html('Invalid Input', 'Something went wrong...', 'error');
+
+            return redirect()->back()->withInput();
+        }
+
+        Alert::success('Success!', 'Group Updated');
+        return redirect()->route('admin.group.detail', Crypt::encryptString($id));
     }
 }

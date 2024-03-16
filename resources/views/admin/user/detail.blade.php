@@ -43,6 +43,7 @@
                     </div>
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
+            <button class="btn btn-danger" style="width: 100%">Delete User</button>
         </div> <!-- end col-->
 
         <div class="col-xl-8 col-lg-7">
@@ -50,60 +51,21 @@
                 <div class="card-body">
                     <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
                         <li class="nav-item">
-                            <a href="#groups" data-bs-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
-                                Group
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#settings" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                            <a href="#settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
                                 Settings
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="#groups" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                                Group
+                            </a>
+                        </li>
+
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane show active" id="groups">
-
-                            <h5 class="mb-3 mt-4 text-uppercase"><i class="mdi mdi-cards-variant me-1"></i>Groups</h5>
-                            <div class="table-responsive">
-                                <table class="table table-borderless table-nowrap mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Group Name</th>
-                                            <th>Member Type</th>
-                                            <th>Join Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($data->group_member as $index => $item)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $item->group->group_name }}</td>
-                                                <td>{{ $item->memberType->member_type_name }}</td>
-                                                <td>{{ $item->join_date }}</td>
-                                                <td>
-                                                    @if ($item->status == 'Active')
-                                                        <span class="badge badge-success-lighten">Active</span>
-                                                    @else
-                                                        <span class="badge badge-danger-lighten">Not Active</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr class="text-center">
-                                                <td colspan="5">No Data</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div> <!-- end tab-pane -->
-                        <!-- end about me section content -->
-
-                        <div class="tab-pane" id="settings">
-                            <form>
+                        <div class="tab-pane show active" id="settings">
+                            <form action="{{ route('admin.user.update', Crypt::encryptString($data->id)) }}" method="POST">
+                                @csrf
                                 <div class="dropdown float-end">
                                     <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
                                         aria-expanded="false">
@@ -148,7 +110,7 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="phone" class="form-label">Phone Number</label>
-                                            <input type="number" class="form-control" id="number" name="number"
+                                            <input type="number" class="form-control" id="phone" name="phone" maxlength="12" data-toggle="maxlength"
                                                 value="{{ $data->phone }}" placeholder="Phone Number">
                                         </div>
                                     </div>
@@ -168,19 +130,17 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="useremail" class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" id="useremail"
+                                            <input type="email" class="form-control" id="email" name="email"
                                                 value="{{ $data->email }}" placeholder="Enter email">
-                                            <span class="form-text text-muted"><small>If you want to change email please <a
-                                                        href="javascript: void(0);">click</a> here.</small></span>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="userpassword" class="form-label">Password</label>
-                                            <input type="password" class="form-control" id="userpassword"
-                                                placeholder="Enter password">
-                                            <span class="form-text text-muted"><small>If you want to change password please
-                                                    <a href="javascript: void(0);">click</a> here.</small></span>
+                                            <label for="role" class="form-label">Role</label>
+                                            <select name="role" id="role" class="form-control">
+                                                <option value="Admin" @if($data->role == 'Admin') selected @endif>Admin</option>
+                                                <option value="User" @if($data->role == 'User') selected @endif>User</option>
+                                            </select>
                                         </div>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
@@ -191,6 +151,46 @@
                                 </div>
                             </form>
                         </div>
+                        <div class="tab-pane" id="groups">
+
+                            <h5 class="mb-3 mt-4 text-uppercase"><i class="mdi mdi-cards-variant me-1"></i>Groups</h5>
+                            <div class="table-responsive">
+                                <table class="table table-borderless table-nowrap mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Group Name</th>
+                                            <th>Member Type</th>
+                                            <th>Join Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($data->group_member as $index => $item)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $item->group->group_name }}</td>
+                                                <td>{{ $item->memberType->member_type_name }}</td>
+                                                <td>{{ $item->join_date }}</td>
+                                                <td>
+                                                    @if ($item->status == 'Active')
+                                                        <span class="badge badge-success-lighten">Active</span>
+                                                    @else
+                                                        <span class="badge badge-danger-lighten">Not Active</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr class="text-center">
+                                                <td colspan="5">No Data</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div> <!-- end tab-pane -->
+                        <!-- end about me section content -->
                         <!-- end settings content-->
 
                     </div> <!-- end tab-content -->

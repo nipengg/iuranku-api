@@ -44,6 +44,7 @@
                     </div>
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
+            <button class="btn btn-danger" style="width: 100%">Delete Group</button>
         </div> <!-- end col-->
 
         <div class="col-xl-8 col-lg-7">
@@ -51,18 +52,59 @@
                 <div class="card-body">
                     <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
                         <li class="nav-item">
-                            <a href="#members" data-bs-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
-                                Member
+                            <a href="#settings" data-bs-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
+                                Settings
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#settings" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
-                                Settings
+                            <a href="#members" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                                Member
                             </a>
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane show active" id="members">
+                        <div class="tab-pane show active" id="settings">
+                            <form action="{{ route('admin.group.update', Crypt::encryptString($data->id)) }}"
+                                method='POST'>
+                                @csrf
+                                <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i> Group Info </h5>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Group Name</label>
+                                            <input type="text" class="form-control" id="name" name="group_name"
+                                                value="{{ $data->group_name }}" placeholder="Name">
+                                        </div>
+                                    </div>
+                                </div> <!-- end row -->
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description (Optional)</label>
+                                            <textarea class="form-control" id="description" name="group_description" rows="4" placeholder="Group Description">{{ $data->group_description }}</textarea>
+                                        </div>
+                                    </div> <!-- end col -->
+                                </div> <!-- end row -->
+
+
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label">Address</label>
+                                            <textarea class="form-control" id="address" name="group_address" rows="4" placeholder="Write something...">{{ $data->group_address }}</textarea>
+                                        </div>
+                                    </div> <!-- end col -->
+                                </div> <!-- end row -->
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>
+                                        Save</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane show" id="members">
 
                             <h5 class="mb-3 mt-4 text-uppercase"><i class="mdi mdi-cards-variant me-1"></i>Members</h5>
                             <div class="table-responsive">
@@ -102,56 +144,6 @@
 
                         </div> <!-- end tab-pane -->
                         <!-- end about me section content -->
-
-                        <div class="tab-pane" id="settings">
-                            <form>
-                                <div class="dropdown float-end">
-                                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <i class="mdi mdi-dots-vertical"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <!-- item-->
-                                        <a href="javascript:void(0);" class="dropdown-item text-danger">Delete Group</a>
-                                    </div>
-                                </div>
-                                <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i> Group Info </h5>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Group Name</label>
-                                            <input type="text" class="form-control" id="name" name="group_name"
-                                                value="{{ $data->group_name }}" placeholder="Name">
-                                        </div>
-                                    </div>
-                                </div> <!-- end row -->
-
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label">Description (Optional)</label>
-                                            <textarea class="form-control" id="description" name="group_description" rows="4" placeholder="Group Description">{{ $data->group_description }}</textarea>
-                                        </div>
-                                    </div> <!-- end col -->
-                                </div> <!-- end row -->
-
-
-
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="mb-3">
-                                            <label for="address" class="form-label">Address</label>
-                                            <textarea class="form-control" id="address" name="address" rows="4" placeholder="Write something...">{{ $data->group_address }}</textarea>
-                                        </div>
-                                    </div> <!-- end col -->
-                                </div> <!-- end row -->
-
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>
-                                        Save</button>
-                                </div>
-                            </form>
-                        </div>
                         <!-- end settings content-->
 
                     </div> <!-- end tab-content -->
