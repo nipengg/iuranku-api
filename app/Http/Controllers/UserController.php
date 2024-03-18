@@ -58,15 +58,20 @@ class UserController extends Controller
             return redirect()->back()->withInput();
         }
 
-        User::create([
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'gender' => $data['gender'],
-            'email' => $data['email'],
-            'address' => $data['address'],
-            'password' => Hash::make($data['password']),
-            'role' => $data['role'],
-        ]);
+        try {
+            User::create([
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'gender' => $data['gender'],
+                'email' => $data['email'],
+                'address' => $data['address'],
+                'password' => Hash::make($data['password']),
+                'role' => $data['role'],
+            ]);
+        } catch (\Throwable $th) {
+            Alert::html('Invalid Input', 'Something went wrong...', 'error');
+            return redirect()->back()->withInput();
+        }
 
         Alert::success('Success!', 'User Stored');
         return redirect()->route('admin.user.index');
@@ -115,14 +120,19 @@ class UserController extends Controller
             return redirect()->back()->withInput();
         }
 
-        User::where('id', $id)->update([
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'gender' => $data['gender'],
-            'email' => $data['email'],
-            'address' => $data['address'],
-            'role' => $data['role'],
-        ]);
+        try {
+            User::where('id', $id)->update([
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'gender' => $data['gender'],
+                'email' => $data['email'],
+                'address' => $data['address'],
+                'role' => $data['role'],
+            ]);
+        } catch (\Throwable $th) {
+            Alert::html('Invalid Input', 'Something went wrong...', 'error');
+            return redirect()->back()->withInput();
+        }
 
         Alert::success('Success!', 'User Updated');
         return redirect()->route('admin.user.detail', Crypt::encryptString($id));
