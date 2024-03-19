@@ -72,6 +72,7 @@ class AuthController extends Controller
             }
 
             $user = User::where('email', $request->email)->first();
+            $user->makeHidden('groups');
 
             $tokenResult = $user->createToken('authToken')->plainTextToken;
             
@@ -79,10 +80,12 @@ class AuthController extends Controller
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
+                'groups' => $user->groups,
             ], 'Authenticated');
         }
         catch (Exception $error)
         {
+            dd($error);
             return ResponseFormatter::error([
                 'message' => 'Something went wrong...',
                 'error' => $error,
@@ -99,6 +102,12 @@ class AuthController extends Controller
 
     public function fetch(Request $request)
     {
-        return ResponseFormatter::success($request->user(), 'Get User Data Success');
+        $user = $request->user();
+        $user->makeHidden('groups');
+
+        return ResponseFormatter::success([
+            'user' => $user,
+            'groups' => $user->groups,
+        ], 'Authenticated');
     }
 }
