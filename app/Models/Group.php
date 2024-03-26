@@ -16,6 +16,13 @@ class Group extends Model
         'user_in'
     ];
 
+    public function toArray()
+    {
+        $array = parent::toArray();
+        unset($array['laravel_through_key']);
+        return $array;
+    }
+
     public function group_member()
     {
         return $this->hasMany(GroupMember::class, 'group_id', 'id');
