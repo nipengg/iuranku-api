@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Google
+Route::post('/googleOAuth', [AuthController::class, 'googleOAuth']);
+
 //
 Route::middleware('auth:sanctum')->group(function() {
     // Auth

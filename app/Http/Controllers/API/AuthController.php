@@ -9,10 +9,57 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Rules\Password;
 
 class AuthController extends Controller
 {
+    public function googleOAuth(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'name' => ['required', 'string'],
+                'email' => ['required', 'string'],
+            ]);
+
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Something went wrong..',
+                    'error' => $validator->errors()->all(),
+                ], 'Validation Error', 400);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            // If user not exist
+            if (!$user) 
+            {
+                return ResponseFormatter::success([
+                    'user' => [
+                        'name' => $request->name,
+                        'email' => $request->email
+                    ],
+                ], 'Register');
+            }
+
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+            return ResponseFormatter::success([
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+                'user' => $user,
+                'groups' => $user->groups,
+            ], 'Authenticated');
+
+        } catch (Exception $err) {
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong..',
+                'error' => $err,
+            ], 'Something went wrong..', 500);
+        }
+    }
+
     public function register(Request $request)
     {
         try {
@@ -27,7 +74,6 @@ class AuthController extends Controller
 
             User::create([
                 'name' => $request->name,
-                'username' => $request->username,
                 'email' => $request->email,
                 'address' => $request->email,
                 'gender' => $request->gender,
@@ -44,9 +90,9 @@ class AuthController extends Controller
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
+                'groups' => $user->groups,
             ], 'User Registered');
-
-
+            
         } catch (Exception $err) {
             return ResponseFormatter::error([
                 'message' => 'Something went wrong..',
@@ -57,15 +103,13 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        try
-        {
+        try {
             $credentials = $request->validate([
                 'email' => ['required', 'email'],
                 'password' => ['required'],
             ]);
 
-            if (!Auth::attempt($credentials))
-            {
+            if (!Auth::attempt($credentials)) {
                 return ResponseFormatter::error([
                     'message' => 'Unauthorized',
                 ], 'Authentication Failed', 500);
@@ -75,16 +119,14 @@ class AuthController extends Controller
             $user->makeHidden('groups');
 
             $tokenResult = $user->createToken('authToken')->plainTextToken;
-            
+
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
                 'groups' => $user->groups,
             ], 'Authenticated');
-        }
-        catch (Exception $error)
-        {
+        } catch (Exception $error) {
             dd($error);
             return ResponseFormatter::error([
                 'message' => 'Something went wrong...',
