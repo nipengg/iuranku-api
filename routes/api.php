@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\GroupController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,11 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::prefix('/user')->group(function () {
             Route::get('/getUserList', [UserController::class, 'getUserList']); 
         });
+    });
+
+    // Group
+    Route::prefix('/group')->group(function () {
+        Route::get('/getGroup', [GroupController::class, 'getGroup']);
     });
 });
 

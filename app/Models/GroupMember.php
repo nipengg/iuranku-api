@@ -9,6 +9,8 @@ class GroupMember extends Model
 {
     use HasFactory;
 
+    protected $hidden = ['group_id', 'user_id', 'member_type_id'];
+
     protected $fillable = [
         'user_id',
         'group_id',
@@ -30,7 +32,7 @@ class GroupMember extends Model
         return $this->belongsTo(Group::class, 'group_id', 'id');
     }
 
-    public function memberType()
+    public function member_type()
     {
         return $this->belongsTo(MemberType::class, 'member_type_id', 'id');
     }
