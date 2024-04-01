@@ -170,7 +170,7 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->group->group_name }}</td>
-                                                <td>{{ $item->memberType->member_type_name }}</td>
+                                                <td>{{ $item->member_type->member_type_name }}</td>
                                                 <td>{{ $item->join_date }}</td>
                                                 <td>
                                                     @if ($item->status == 'Active')
