@@ -42,7 +42,7 @@ class AuthController extends Controller
                 ], 'Register');
             }
 
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            $tokenResult = $user->createToken('authToken', ['*'], now()->addMinutes(20))->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
@@ -82,7 +82,7 @@ class AuthController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            $tokenResult = $user->createToken('authToken', ['*'], now()->addMinutes(20))->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
@@ -127,7 +127,7 @@ class AuthController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
-            $tokenResult = $user->createToken('authToken', ['*'], now()->addHour())->plainTextToken;
+            $tokenResult = $user->createToken('authToken', ['*'], now()->addMinutes(20))->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
