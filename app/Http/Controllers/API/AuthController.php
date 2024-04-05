@@ -33,8 +33,7 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
 
             // If user not exist
-            if (!$user) 
-            {
+            if (!$user) {
                 return ResponseFormatter::success([
                     'user' => [
                         'name' => $request->name,
@@ -43,13 +42,12 @@ class AuthController extends Controller
                 ], 'Register');
             }
 
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            $tokenResult = $user->createToken('authToken', ['*'], now()->addMinutes(20))->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
-                'groups' => $user->groups,
             ], 'Authenticated');
 
         } catch (Exception $err) {
@@ -84,15 +82,13 @@ class AuthController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            $tokenResult = $user->createToken('authToken', ['*'], now()->addMinutes(20))->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
-                'groups' => $user->groups,
             ], 'User Registered');
-            
         } catch (Exception $err) {
             return ResponseFormatter::error([
                 'message' => 'Something went wrong..',
@@ -104,30 +100,42 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
+
+            $validator = Validator::make($request->all(), [
+                'email' => ['required', 'string'],
+                'password' => ['required', 'string'],
+                'remember' => ['required'],
+            ]);
+
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Something went wrong..',
+                    'error' => $validator->errors()->all(),
+                ], 'Validation Error', 400);
+            }
+
             $credentials = $request->validate([
                 'email' => ['required', 'email'],
                 'password' => ['required'],
             ]);
 
-            if (!Auth::attempt($credentials)) {
+            if (!Auth::attempt($credentials, $request->remember)) {
                 return ResponseFormatter::error([
-                    'message' => 'Unauthorized',
-                ], 'Authentication Failed', 500);
+                    'message' => 'Email or password maybe incorrect.',
+                ], 'Invalid Credential', 400);
             }
 
             $user = User::where('email', $request->email)->first();
-            $user->makeHidden('groups');
 
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            $tokenResult = $user->createToken('authToken', ['*'], now()->addMinutes(20))->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user,
-                'groups' => $user->groups,
             ], 'Authenticated');
+
         } catch (Exception $error) {
-            dd($error);
             return ResponseFormatter::error([
                 'message' => 'Something went wrong...',
                 'error' => $error,
