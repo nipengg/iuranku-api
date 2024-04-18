@@ -18,16 +18,16 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/fetch', [AuthController::class, 'fetch']);
 
+    // Group
+    Route::prefix('/group')->group(function () {
+        Route::get('/getGroup', [GroupController::class, 'getGroup']);
+    });
+
     // User
     Route::middleware(['isadmin'])->group(function () {
         Route::prefix('/user')->group(function () {
             Route::get('/getUserList', [UserController::class, 'getUserList']); 
         });
-    });
-
-    // Group
-    Route::prefix('/group')->group(function () {
-        Route::get('/getGroup', [GroupController::class, 'getGroup']);
     });
 });
 

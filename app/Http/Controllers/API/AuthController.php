@@ -121,7 +121,7 @@ class AuthController extends Controller
 
             if (!Auth::attempt($credentials, $request->remember)) {
                 return ResponseFormatter::error([
-                    'message' => 'Email or password maybe incorrect.',
+                    'message' => 'Email or password is incorrect.',
                 ], 'Invalid Credential', 400);
             }
 
