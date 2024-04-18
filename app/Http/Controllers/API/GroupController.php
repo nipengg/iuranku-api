@@ -26,9 +26,7 @@ class GroupController extends Controller
                 ], 'Validation Error', 400);
             }
 
-            $user = User::where('id', $request->user_id)
-                        ->where('deleted_at', null)
-                        ->first();
+            $user = User::where('id', $request->user_id)->first();
 
             if ($user == null) {
                 return ResponseFormatter::error([
@@ -39,7 +37,6 @@ class GroupController extends Controller
 
             $user->load(['group_member' => function ($query) {
                 $query->where('status', 'Active');
-                $query->where('deleted_at', null);
             }]);
 
             return ResponseFormatter::success([

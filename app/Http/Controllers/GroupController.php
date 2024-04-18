@@ -27,7 +27,7 @@ class GroupController extends Controller
 
     public function create()
     {
-        $users = User::where('role', 'User')->whereNull('deleted_at')->get();
+        $users = User::where('role', 'User')->get();
 
         return view('admin.group.create', [
             'users' => $users
