@@ -6,6 +6,20 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+ 
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', function () {
@@ -19,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::prefix('/admin')->group(function () {
+    Route::prefix('/admin')->middleware(['isadmin'])->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 
         Route::prefix('/user')->group(function () {

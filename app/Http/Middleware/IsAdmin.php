@@ -20,9 +20,10 @@ class IsAdmin
         if (Auth::check() && Auth::user()->role == 'Admin') {
             return $next($request);
         } else {
-            return ResponseFormatter::error([
+            return $request->expectsJson() ? ResponseFormatter::error([
                 'message' => 'Unauthorized',
-            ], 'Authorization Failed', 401);
+            ], 'Authorization Failed', 401) 
+            : redirect('/login');
         }
     }
 }

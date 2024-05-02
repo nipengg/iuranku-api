@@ -46,7 +46,7 @@
                 <div class="card-body">
                     <div class="tab-content">
                         <div class="tab-pane show active" id="buttons-table-preview">
-                            <table id="datatable-buttons" class="table table-striped dt-responsive nowrap w-100">
+                            <table id="scroll-horizontal-datatable" class="table w-100 nowrap">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
@@ -55,6 +55,7 @@
                                         <th>Phone</th>
                                         <th>Role</th>
                                         <th>Created At</th>
+                                        <th>Verified</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -67,6 +68,13 @@
                                             <td>{{ $item->phone }}</td>
                                             <td>{{ $item->role }}</td>
                                             <td>{{ $item->created_at }}</td>
+                                            <td>
+                                                @if ($item->email_verified_at)
+                                                    <span class="badge bg-success">Verified</span>
+                                                @else
+                                                    <span class="badge bg-danger">Not Verified</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <a href="{{ route('admin.user.detail', Crypt::encryptString($item->id)) }}"
                                                     class="btn btn-outline-primary btn-soft-primary rounded-pill">Detail</a>
