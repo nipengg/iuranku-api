@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // User
+    Route::put('/user/edit-profile', [AuthController::class, 'editProfile']);
     Route::middleware(['isadmin'])->group(function () {
         Route::prefix('/user')->group(function () {
             Route::get('/getUserList', [UserController::class, 'getUserList']);
