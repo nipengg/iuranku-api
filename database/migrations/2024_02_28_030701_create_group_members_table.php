@@ -19,7 +19,6 @@ return new class extends Migration
             $table->enum('status', ['Active', 'Not Active']);
             $table->timestamp('join_date');
             $table->timestamp('leave_date')->nullable();
-            $table->enum('leave_type', ['Leave', 'Kick'])->nullable();
             $table->string('leave_note')->nullable();
             $table->timestamps();
             $table->softDeletes();
