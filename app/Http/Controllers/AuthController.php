@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -21,21 +23,14 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password'], 'role' => 'Admin'])) {
             $data = $request->all();
-
             $user = User::where('email', $data['email'])->first();
-
-            if ($user->role == 'User') {
-                Alert::error('User not Authorized', 'Access Denied');
-                return redirect()->route('login')->with('error_message', 'No Privileges. Not Authorized');
-            }
-
             Alert::success('Authorized!', 'Welcome back ' . $user->name);
             return redirect()->route('admin.dashboard');
         }
-        Alert::error('Invalid Credential', 'Email or Password might be incorrect.');
-        return redirect()->route('login');
+        Alert::error('Invalid Credential or Unauthorized', 'Email or Password might be incorrect. Access Denied');
+        return redirect()->route('loginPage')->withInput();
     }
 
     public function logout()
@@ -43,5 +38,16 @@ class AuthController extends Controller
         Auth::logout();
 
         return redirect()->route('loginPage');
+    }
+
+    public function verifyEmail($id, $hash)
+    {
+        $user = User::where('id', $id)->first();
+        if ($user) {
+            if (!$user->hasVerifiedEmail() && hash_equals(sha1($user->getEmailForVerification()), (string)$hash)) {
+                $user->markEmailAsVerified();
+                event(new Verified($user));
+            }
+        }
     }
 }

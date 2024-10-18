@@ -8,9 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
-use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -59,15 +60,18 @@ class UserController extends Controller
         }
 
         try {
-            User::create([
-                'name' => $data['name'],
-                'phone' => $data['phone'],
-                'gender' => $data['gender'],
-                'email' => $data['email'],
-                'address' => $data['address'],
-                'password' => Hash::make($data['password']),
-                'role' => $data['role'],
-            ]);
+            DB::transaction(function () use ($data): void {
+                $user = User::create([
+                    'name' => $data['name'],
+                    'phone' => $data['phone'],
+                    'gender' => $data['gender'],
+                    'email' => $data['email'],
+                    'address' => $data['address'],
+                    'password' => Hash::make($data['password']),
+                    'role' => $data['role'],
+                ]);
+                event(new Registered($user));
+            });
         } catch (\Throwable $th) {
             Alert::html('Invalid Input', 'Something went wrong...', 'error');
             return redirect()->back()->withInput();
@@ -92,7 +96,7 @@ class UserController extends Controller
     {
         $data = $request->all();
         $id = Crypt::decryptString($ids);
-        
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:50',
             'phone' => 'required|max:12|unique:users,phone,' . $id,
@@ -103,8 +107,7 @@ class UserController extends Controller
             'role' => 'required',
         ]);
 
-        if ($validator->fails()) 
-        {
+        if ($validator->fails()) {
             $errors = $validator->errors()->all();
 
             $errorListItems = '';

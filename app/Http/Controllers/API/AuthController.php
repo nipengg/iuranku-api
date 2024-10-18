@@ -6,8 +6,10 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Rules\Password;
@@ -70,15 +72,18 @@ class AuthController extends Controller
                 'phone' => ['nullable', 'string', 'max:12'],
             ]);
 
-            User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'address' => $request->email,
-                'gender' => $request->gender,
-                'phone' => $request->phone,
-                'password' => Hash::make($request->password),
-                'role' => 'User'
-            ]);
+            DB::transaction(function () use ($request): void {
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'address' => $request->email,
+                    'gender' => $request->gender,
+                    'phone' => $request->phone,
+                    'password' => Hash::make($request->password),
+                    'role' => 'User'
+                ]);
+                event(new Registered($user));
+            });
 
             $user = User::where('email', $request->email)->first();
 
@@ -89,6 +94,7 @@ class AuthController extends Controller
                 'token_type' => 'Bearer',
                 'user' => $user,
             ], 'User Registered');
+
         } catch (Exception $err) {
             return ResponseFormatter::error([
                 'message' => 'Something went wrong..',
@@ -121,7 +127,7 @@ class AuthController extends Controller
 
             if (!Auth::attempt($credentials, $request->remember)) {
                 return ResponseFormatter::error([
-                    'message' => 'Email or password maybe incorrect.',
+                    'message' => 'Email or password is incorrect.',
                 ], 'Invalid Credential', 400);
             }
 
