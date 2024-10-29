@@ -9,4 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TuitionType extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = "tuition_type";
+    protected $fillable = [
+        'tuition_name'
+    ];
 }

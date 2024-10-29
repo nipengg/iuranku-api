@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('group_tuition_settings', function (Blueprint $table) {
+        Schema::create('group_application', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('group_id');
-            $table->unsignedBigInteger('type_tuition_id');
-            $table->integer('tuition_value');
-            $table->year('tuition_period');
+            $table->enum('status', ['Pending', 'Accepted', 'Rejected', 'Canceled']);
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('group_id')->references('id')->on('groups');
-            $table->foreign('type_tuition_id')->references('id')->on('tuition_types');
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('group_tuition_settings');
+        Schema::dropIfExists('group_applications');
     }
 };

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Group extends Model
@@ -24,7 +25,7 @@ class Group extends Model
         return $array;
     }
 
-    public function group_member()
+    public function group_member(): HasMany
     {
         return $this->hasMany(GroupMember::class, 'group_id', 'id');
     }

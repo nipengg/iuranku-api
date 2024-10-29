@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberType extends Model
@@ -14,7 +15,7 @@ class MemberType extends Model
         'member_type_name',
     ];
 
-    public function group_member()
+    public function group_member(): HasMany
     {
         return $this->hasMany(GroupMember::class);
     }
