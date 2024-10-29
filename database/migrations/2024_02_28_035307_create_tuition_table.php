@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tuitions', function (Blueprint $table) {
+        Schema::create('tuition', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('request_tuition_id');
             $table->integer('nominal');
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('request_tuition_id')->references('id')->on('request_tuitions');
+            $table->foreign('request_tuition_id')->references('id')->on('request_tuition');
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tuitions');
+        Schema::dropIfExists('tuition');
     }
 };

@@ -9,4 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class GroupTuitionSetting extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'group_tuition_setting';
+    protected $fillable = [
+        'group_id',
+        'type_tuition_id',
+        'tuition_value',
+        'tuition_period',
+    ];
 }

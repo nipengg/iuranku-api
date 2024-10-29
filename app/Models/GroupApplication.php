@@ -9,4 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class GroupApplication extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'group_application';
+    protected $fillable = [
+        'user_id',
+        'group_id',
+        'status',
+    ];
 }
