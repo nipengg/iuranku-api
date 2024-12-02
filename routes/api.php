@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\GroupController;
+use App\Http\Controllers\API\GroupNewsController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Group
         Route::prefix('/group')->group(function () {
             Route::get('/getGroup', [GroupController::class, 'getGroup']);
+
+            Route::prefix('/news')->group(function () {
+                Route::get('/', [GroupNewsController::class, 'getGroupNews']);
+                Route::post('/store', [GroupNewsController::class, 'insertGroupNews']);
+                Route::patch('/update', [GroupNewsController::class, 'updateGroupNews']);
+                Route::delete('/delete', [GroupNewsController::class, 'deleteGroupNews']);
+            });
         });
     });
 
