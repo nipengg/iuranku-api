@@ -29,8 +29,8 @@ class GroupNewsController extends Controller
             $groupNews = GroupNews::with(['group', 'author'])->where('id', $request->group_id)->get();
 
             return ResponseFormatter::success([
-                'groupNews' => $groupNews
-            ], 'Get Group New Success!');
+                'group_news' => $groupNews
+            ], 'Get Group News Success!');
         } catch (Exception $err) {
             return ResponseFormatter::error([
                 'message' => 'Something went wrong..',

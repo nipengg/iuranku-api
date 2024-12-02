@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\GroupController;
+use App\Http\Controllers\API\GroupMemberController;
 use App\Http\Controllers\API\GroupNewsController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::post('/store', [GroupNewsController::class, 'insertGroupNews']);
                 Route::patch('/update', [GroupNewsController::class, 'updateGroupNews']);
                 Route::delete('/delete', [GroupNewsController::class, 'deleteGroupNews']);
+            });
+
+            
+            Route::prefix('/members')->group(function () {
+                Route::get('/', [GroupMemberController::class, 'getGroupMembers']);
             });
         });
     });
