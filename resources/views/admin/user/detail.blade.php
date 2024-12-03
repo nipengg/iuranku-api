@@ -176,7 +176,7 @@
                                                     @if ($item->status == 'Active')
                                                         <span class="badge badge-success-lighten">Active</span>
                                                     @else
-                                                        <span class="badge badge-danger-lighten">Not Active</span>
+                                                        <span class="badge badge-danger-lighten">Inactive</span>
                                                     @endif
                                                 </td>
                                             </tr>

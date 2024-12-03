@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('group_id');
             $table->unsignedBigInteger('member_type_id');
-            $table->enum('status', ['Active', 'Not Active']);
+            $table->enum('status', ['Active', 'Inactive']);
             $table->timestamp('join_date');
             $table->timestamp('leave_date')->nullable();
             $table->string('leave_note')->nullable();

@@ -11,6 +11,6 @@ class Constant
 
     const STATUS = [
         'Active' => 'Active',
-        'Not Active' => 'Not Active'
+        'Inactive' => 'Inactive'
     ];
 }

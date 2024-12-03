@@ -14,7 +14,7 @@ class GroupNewsController extends Controller
     public function getGroupNews(Request $request)
     {
         try {
-            
+
             $validator = Validator::make($request->all(), [
                 'group_id' => ['required', 'integer'],
             ]);
@@ -26,10 +26,16 @@ class GroupNewsController extends Controller
                 ], 'Validation Error', 400);
             }
 
-            $groupNews = GroupNews::with(['group', 'author'])->where('id', $request->group_id)->get();
+            $data = GroupNews::with(['group', 'author'])
+                ->where('group_id', $request->group_id)
+                ->paginate($request->take);
 
             return ResponseFormatter::success([
-                'group_news' => $groupNews
+                'data' => $data->items(),
+                'page' => $data->currentPage(),
+                'take' => $data->perPage(),
+                'total' => $data->total(),
+                'total_page' => ceil($data->total() / $data->perPage()),
             ], 'Get Group News Success!');
         } catch (Exception $err) {
             return ResponseFormatter::error([
@@ -42,7 +48,7 @@ class GroupNewsController extends Controller
     public function insertGroupNews(Request $request)
     {
         try {
-            
+
             $validator = Validator::make($request->all(), [
                 'news_title' => ['required', 'string'],
                 'content' => ['required', 'string'],
@@ -65,7 +71,7 @@ class GroupNewsController extends Controller
             ]);
 
             return ResponseFormatter::success([
-                'groupNews' => $groupNews
+                'data' => $groupNews
             ], 'Create Group New Success!');
         } catch (Exception $err) {
             return ResponseFormatter::error([
@@ -78,7 +84,7 @@ class GroupNewsController extends Controller
     public function updateGroupNews(Request $request)
     {
         try {
-    
+
             $validator = Validator::make($request->all(), [
                 'group_news_id' => ['required', 'integer'],
                 'content' => ['required', 'string'],
@@ -92,7 +98,7 @@ class GroupNewsController extends Controller
             }
 
             $data = $request->all();
-            
+
             $groupNews = GroupNews::find($data['group_news_id']);
 
             if (!$groupNews) {
@@ -105,7 +111,7 @@ class GroupNewsController extends Controller
             $groupNews->update($data);
 
             return ResponseFormatter::success([
-                'groupNews' => $groupNews
+                'data' => $groupNews
             ], 'Update Group New Success!');
         } catch (Exception $err) {
             return ResponseFormatter::error([
@@ -118,7 +124,7 @@ class GroupNewsController extends Controller
     public function deleteGroupNews(Request $request)
     {
         try {
-    
+
             $validator = Validator::make($request->all(), [
                 'group_news_id' => ['required', 'integer'],
             ]);

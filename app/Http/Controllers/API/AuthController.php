@@ -82,7 +82,7 @@ class AuthController extends Controller
                     'password' => Hash::make($request->password),
                     'role' => 'User'
                 ]);
-                event(new Registered($user));
+                // event(new Registered($user));
             });
 
             $user = User::where('email', $request->email)->first();
