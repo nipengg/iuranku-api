@@ -5,6 +5,7 @@ use App\Http\Controllers\API\GroupApplicationController;
 use App\Http\Controllers\API\GroupController;
 use App\Http\Controllers\API\GroupMemberController;
 use App\Http\Controllers\API\GroupNewsController;
+use App\Http\Controllers\API\GroupTuitionSettingController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::get('/', [GroupApplicationController::class, 'getGroupApplication']);
                 Route::post('/handle', [GroupApplicationController::class, 'handleGroupApplicationResponse']);
                 Route::post('/invite', [GroupApplicationController::class, 'inviteUserGroupApplication']);
+            });
+
+            Route::prefix('/tuition-setting')->group(function () {
+                Route::get('/', [GroupTuitionSettingController::class, 'getGroupTuitionSetting']);
+                Route::post('/update', [GroupTuitionSettingController::class, 'updateGroupTuitionSetting']);
             });
         });
     });
