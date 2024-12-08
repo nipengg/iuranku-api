@@ -20,7 +20,6 @@ class GroupMember extends Model
         'status',
         'join_date',
         'leave_date',
-        'leave_type',
         'leave_note',
     ];
 

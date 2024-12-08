@@ -9,6 +9,12 @@ class Constant
         'Group Member' => 2,
     ];
 
+    const TUITION_TYPE = [
+        'Kebersihan' => 1,
+        'Keamanan' => 2,
+        'Kematian' => 3,
+    ];
+
     const STATUS = [
         'Active' => 'Active',
         'Inactive' => 'Inactive'

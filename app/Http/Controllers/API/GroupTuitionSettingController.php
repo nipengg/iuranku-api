@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\GroupTuitionSetting;
+use App\Models\TuitionType;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,8 @@ class GroupTuitionSettingController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'group_tuition_setting_id' => ['required', 'integer', 'exists:group_tuition_setting,id'],
+                'group_id' => ['required', 'integer', 'exists:groups,id'],
+                'type_tuition' => ['required', 'string', 'in:Kebersihan,Keamanan,Kematian'],
                 'tuition_period'  => ['required', 'integer'],
             ]);
 
@@ -29,18 +31,16 @@ class GroupTuitionSettingController extends Controller
                 ], 'Validation Error', 400);
             }
 
-            if ($request->status != 'All') {
-                $data = GroupTuitionSetting::with(['group', 'typeTuition'])->where('id', $request->group_tuition_setting_id)->where('tuition_period', $request->tuition_period)->paginate($request->take);
-            } else {
-                $data = GroupTuitionSetting::with(['group', 'typeTuition'])->where('id', $request->group_tuition_setting_id)->paginate($request->take);
+            $type = TuitionType::where('tuition_name', $request->type_tuition)->first();
+
+            if (!$type) {
+                throw new Exception("Invalid tuition type.");
             }
 
+            $data = GroupTuitionSetting::with(['group', 'typeTuition'])->where('group_id', $request->group_id)->where('type_tuition_id', $type->id)->where('tuition_period', $request->tuition_period)->first();
+
             return ResponseFormatter::success([
-                'data' => $data->items(),
-                'page' => $data->currentPage(),
-                'take' => $data->perPage(),
-                'total' => $data->total(),
-                'total_page' => ceil($data->total() / $data->perPage()),
+                'data' => $data,
             ], 'Get Group Tuition Setting Success!');
         } catch (Exception $err) {
             return ResponseFormatter::error([
@@ -50,40 +50,65 @@ class GroupTuitionSettingController extends Controller
         }
     }
 
-
-    public function updateGroupTuitionSetting(Request $request)
+    public function insertOrUpdateGroupTuitionSetting(Request $request)
     {
         try {
-
             $validator = Validator::make($request->all(), [
-                'group_tuition_setting_id' => ['required', 'integer', 'exists:group_tuition_setting,id'],
+                'group_tuition_setting_id' => ['nullable', 'integer', 'exists:group_tuition_setting,id'],
+                'group_id' => ['nullable', 'integer', 'exists:groups,id'],
+                'type_tuition' => ['nullable', 'string', 'in:Kebersihan,Keamanan,Kematian'],
                 'tuition_value' => ['required', 'integer'],
-                'tuition_period'  => ['required', 'integer'],
+                'tuition_period' => ['required', 'integer'],
             ]);
 
             if ($validator->fails()) {
                 return ResponseFormatter::error([
-                    'message' => 'Something went wrong..',
+                    'message' => 'Validation failed.',
                     'error' => $validator->errors()->all(),
                 ], 'Validation Error', 400);
             }
 
-            $data = $request->all();
+            $data = $request->only(['group_id', 'tuition_value', 'tuition_period']);
+            $groupTuitionSettingId = $request->group_tuition_setting_id;
 
-            $setting = GroupTuitionSetting::findOrFail($request->group_tuition_setting_id);
+            DB::transaction(function () use ($request, $groupTuitionSettingId, $data): void {
+                if ($groupTuitionSettingId) {
+                    $setting = GroupTuitionSetting::findOrFail($groupTuitionSettingId);
+                    $setting->update($data);
+                } else {
+                    $type = TuitionType::where('tuition_name', $request->type_tuition)->first();
 
-            DB::transaction(function () use ($request, $data, $setting): void {
-                $setting->update($data);
+                    if ($type) {
+                        $data['type_tuition_id'] = $type->id;
+                    } else {
+                        throw new Exception("Invalid tuition type.");
+                    }
+
+                    $existingSetting = GroupTuitionSetting::where('group_id', $request->group_id)
+                        ->where('type_tuition_id', $data['type_tuition_id'])
+                        ->where('tuition_period', $request->tuition_period)
+                        ->first();
+
+                    if ($existingSetting) {
+                        throw new Exception("A tuition setting for this group, type, and year already exists.");
+                    }
+
+                    GroupTuitionSetting::create($data);
+                }
             });
 
             return ResponseFormatter::success([
-                'message' => 'Group Tuition Setting Updated'
-            ], 'Group Tuition Setting Updated');
+                'message' => $groupTuitionSettingId
+                    ? 'Group Tuition Setting Updated'
+                    : 'Group Tuition Setting Created',
+            ], $groupTuitionSettingId
+                ? 'Group Tuition Setting Updated'
+                : 'Group Tuition Setting Created');
         } catch (Exception $err) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong..',
-                'error' => $err,
-            ], 'Something went wrong..', 500);
+                'message' => 'Something went wrong.',
+                'error' => $err->getMessage(),
+            ], 'Error', 500);
         }
     }
 }

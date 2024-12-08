@@ -77,13 +77,12 @@ class GroupController extends Controller
                         'status' => Constant::STATUS['Active'],
                         'join_date' => Carbon::now(),
                         'leave_date' => null,
-                        'leave_type' => null,
                         'leave_note' => null,
                     ]);
                 }
             });
         } catch (\Throwable $th) {
-            Alert::html('Invalid Input', 'Something went wrong...', 'error');
+            Alert::html('Invalid Input', $th->getMessage(), 'error');
             return redirect()->back()->withInput();
         }
 

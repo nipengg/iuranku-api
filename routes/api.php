@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('/tuition-setting')->group(function () {
                 Route::get('/', [GroupTuitionSettingController::class, 'getGroupTuitionSetting']);
-                Route::post('/update', [GroupTuitionSettingController::class, 'updateGroupTuitionSetting']);
+                Route::post('/update', [GroupTuitionSettingController::class, 'insertOrUpdateGroupTuitionSetting']);
             });
         });
     });
