@@ -32,9 +32,9 @@ class GroupApplicationController extends Controller
             }
 
             if ($request->status != 'All') {
-                $data = GroupApplication::with(['group', 'member_type', 'user'])->where('id', $request->group_id)->where('status', $request->status)->paginate($request->take);
+                $data = GroupApplication::with(['group', 'user'])->where('group_id', $request->group_id)->where('status', $request->status)->paginate($request->take);
             } else {
-                $data = GroupApplication::with(['group', 'member_type', 'user'])->where('id', $request->group_id)->paginate($request->take);
+                $data = GroupApplication::with(['group', 'user'])->where('group_id', $request->group_id)->paginate($request->take);
             }
 
             return ResponseFormatter::success([
