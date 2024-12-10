@@ -14,6 +14,7 @@ class GroupNews extends Model
     protected $fillable = [
         'news_title',
         'content',
+        'image',
         'author_id',
         'group_id',
     ];

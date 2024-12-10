@@ -36,9 +36,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('/news')->group(function () {
                 Route::get('/', [GroupNewsController::class, 'getGroupNews']);
+                Route::get('/detail', [GroupNewsController::class, 'getGroupNewsById']);
                 Route::post('/store', [GroupNewsController::class, 'insertGroupNews']);
-                Route::patch('/update', [GroupNewsController::class, 'updateGroupNews']);
-                Route::delete('/delete', [GroupNewsController::class, 'deleteGroupNews']);
+                Route::post('/update', [GroupNewsController::class, 'updateGroupNews']);
+                Route::post('/delete', [GroupNewsController::class, 'deleteGroupNews']);
             });
 
             Route::prefix('/members')->group(function () {

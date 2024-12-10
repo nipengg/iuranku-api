@@ -82,12 +82,12 @@ class AuthController extends Controller
                     'password' => Hash::make($request->password),
                     'role' => 'User'
                 ]);
-                // event(new Registered($user));
+                event(new Registered($user));
             });
 
             $user = User::where('email', $request->email)->first();
 
-            $tokenResult = $user->createToken('authToken', ['*'], now()->addMinutes(20))->plainTextToken;
+            $tokenResult = $user->createToken('authToken', ['*'], now()->addHour(1))->plainTextToken;
 
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
