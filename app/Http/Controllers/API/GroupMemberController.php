@@ -5,13 +5,63 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\GroupMember;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class GroupMemberController extends Controller
 {
+
+    public function findMembers(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'search_value' => ['required', 'string'],
+                'group_id' => ['required', 'string'],
+            ]);
+
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => $validator->errors()->all(),
+                    'error' => $validator->errors()->all(),
+                ], 'Validation Error', 400);
+            }
+
+            $data = User::where('id', '!=', Auth::id())
+                ->whereNotIn('id', function ($query) use ($request) {
+                    $query->select('user_id')
+                        ->from('group_members')
+                        ->where('group_id', $request->group_id)
+                        ->where('status', 'Active');
+                })
+                ->whereNotIn('id', function ($query) use ($request) {
+                    $query->select('user_id')
+                        ->from('group_application')
+                        ->where('group_id', $request->group_id)
+                        ->where('status', 'Pending');
+                })
+                ->where(function ($query) use ($request) {
+                    $query->where('name', 'LIKE', '%' . $request->search_value . '%')
+                        ->orWhere('email', 'LIKE', '%' . $request->search_value . '%');
+                })
+                ->get();
+
+
+
+            return ResponseFormatter::success([
+                'data' => $data,
+            ], 'Find User Success!');
+        } catch (Exception $err) {
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong..',
+                'error' => $err,
+            ], 'Something went wrong..', 500);
+        }
+    }
+
     public function getGroupMembers(Request $request)
     {
         try {
@@ -23,15 +73,15 @@ class GroupMemberController extends Controller
 
             if ($validator->fails()) {
                 return ResponseFormatter::error([
-                    'message' => 'Something went wrong..',
+                    'message' => $validator->errors()->all(),
                     'error' => $validator->errors()->all(),
                 ], 'Validation Error', 400);
             }
 
             if ($request->status != 'All') {
-                $data = GroupMember::with(['group', 'member_type', 'user'])->where('id', $request->group_id)->where('status', $request->status)->paginate($request->take);
+                $data = GroupMember::with(['group', 'member_type', 'user'])->where('group_id', $request->group_id)->where('status', $request->status)->paginate($request->take);
             } else {
-                $data = GroupMember::with(['group', 'member_type', 'user'])->where('id', $request->group_id)->paginate($request->take);
+                $data = GroupMember::with(['group', 'member_type', 'user'])->where('group_id', $request->group_id)->paginate($request->take);
             }
 
             return ResponseFormatter::success([

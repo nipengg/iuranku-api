@@ -44,6 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('/members')->group(function () {
                 Route::get('/', [GroupMemberController::class, 'getGroupMembers']);
+                Route::get('/find-member', [GroupMemberController::class, 'findMembers']);
                 Route::post('/leave', [GroupMemberController::class, 'leaveGroup']);
             });
 
