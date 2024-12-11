@@ -49,8 +49,6 @@ class GroupMemberController extends Controller
                 })
                 ->get();
 
-
-
             return ResponseFormatter::success([
                 'data' => $data,
             ], 'Find User Success!');

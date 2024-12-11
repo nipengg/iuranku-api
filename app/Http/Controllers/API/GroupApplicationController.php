@@ -18,25 +18,35 @@ class GroupApplicationController extends Controller
     public function getGroupApplication(Request $request)
     {
         try {
-
             $validator = Validator::make($request->all(), [
-                'group_id' => ['required', 'integer'],
+                'group_id' => ['nullable', 'integer'],
+                'user_id' => ['nullable', 'integer'],
                 'status' => ['required', 'string', 'in:Pending,Accepted,Rejected,Canceled,All'],
             ]);
-
+    
             if ($validator->fails()) {
                 return ResponseFormatter::error([
                     'message' => 'Something went wrong..',
                     'error' => $validator->errors()->all(),
                 ], 'Validation Error', 400);
             }
-
-            if ($request->status != 'All') {
-                $data = GroupApplication::with(['group', 'user'])->where('group_id', $request->group_id)->where('status', $request->status)->paginate($request->take);
-            } else {
-                $data = GroupApplication::with(['group', 'user'])->where('group_id', $request->group_id)->paginate($request->take);
+    
+            $query = GroupApplication::with(['group', 'user']);
+    
+            if ($request->filled('group_id')) {
+                $query->where('group_id', $request->group_id);
             }
-
+    
+            if ($request->filled('user_id')) {
+                $query->where('user_id', $request->user_id);
+            }
+    
+            if ($request->status != 'All') {
+                $query->where('status', $request->status);
+            }
+    
+            $data = $query->paginate($request->take);
+    
             return ResponseFormatter::success([
                 'data' => $data->items(),
                 'page' => $data->currentPage(),
