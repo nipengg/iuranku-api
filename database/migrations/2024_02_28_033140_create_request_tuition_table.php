@@ -14,18 +14,14 @@ return new class extends Migration
         Schema::create('request_tuition', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('member_id');
-            $table->unsignedBigInteger('type_tuition_id');
             $table->string('file');
             $table->integer('nominal');
-            $table->date('start_date');
-            $table->date('end_date');
             $table->string('remark');
-            $table->enum('status', ['Waiting Approval', 'Rejected', 'Fully Approved']);
+            $table->enum('status', ['Waiting Approval', 'Rejected', 'Fully Approved', 'Canceled']);
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('member_id')->references('id')->on('group_members');
-            $table->foreign('type_tuition_id')->references('id')->on('tuition_type');
         });
     }
 

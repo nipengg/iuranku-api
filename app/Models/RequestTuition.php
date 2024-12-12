@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RequestTuition extends Model
@@ -13,12 +14,15 @@ class RequestTuition extends Model
     protected $table = 'request_tuition';
     protected $fillable = [
         'member_id',
-        'type_tuition_id',
         'nominal',
         'file',
         'status',
-        'start_date',
-        'end_date',
         'remark',
     ];
+
+    
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(GroupMember::class, 'member_id', 'id');
+    }
 }
