@@ -20,8 +20,10 @@ class RequestTuitionController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'period'  => ['required', 'date'],
-                'user_id' => ['required', 'integer', 'exists:users,id'],
+                'period'  => ['required', 'integer'],
+                'user_id' => ['nullable', 'integer', 'exists:users,id'],
+                'group_id' => ['nullable', 'integer', 'exists:groups,id'],
+                'status' => ['nullable', 'string', 'in:Accepted,Rejected,Canceled,Waiting Approval'],
             ]);
 
             if ($validator->fails()) {
@@ -32,15 +34,29 @@ class RequestTuitionController extends Controller
             }
 
             $period = $request->period;
-            $month = date('m', strtotime($period));
-            $year = date('Y', strtotime($period));
+            // $month = date('m', strtotime($period));
+            // $year = date('Y', strtotime($period));
 
-            $data = RequestTuition::whereMonth('created_at', $month)
-                ->whereYear('created_at', $year)
-                ->whereHas('member', function ($query) use ($request) {
+            $query = RequestTuition::with(['member.user', 'member.group'])->whereYear('created_at', $period);
+
+            if ($request->filled('user_id')) {
+                $query->whereHas('member', function ($query) use ($request) {
                     $query->where('user_id', $request->user_id);
-                })
-                ->paginate($request->take);
+                });
+            }
+
+            if ($request->filled('group_id')) {
+                $query->whereHas('member', function ($query) use ($request) {
+                    $query->where('group_id', $request->group_id);
+                });
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // Paginate the results
+            $data = $query->paginate($request->take ?? 10);
 
             return ResponseFormatter::success([
                 'data' => $data->items(),
@@ -64,7 +80,6 @@ class RequestTuitionController extends Controller
             $validator = Validator::make($request->all(), [
                 'user_id' => ['required', 'integer', 'exists:users,id'],
                 'group_id' => ['required', 'integer', 'exists:groups,id'],
-                'type_tuition' => ['required', 'string', 'in:Kebersihan,Keamanan,Kematian'],
                 'file' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
                 'nominal' => ['required', 'integer'],
                 'remark' => ['required', 'string']
@@ -75,13 +90,6 @@ class RequestTuitionController extends Controller
                     'message' => $validator->errors()->all(),
                     'error' => $validator->errors()->all(),
                 ], 'Validation Error', 400);
-            }
-
-            $type = TuitionType::where('tuition_name', $request->type_tuition)->first();
-            if ($type) {
-                $data['type_tuition_id'] = $type->id;
-            } else {
-                throw new Exception("Invalid tuition type.");
             }
 
             $groupMember = GroupMember::where('user_id', $request->user_id)->where('group_id', $request->group_id)->first();
@@ -97,7 +105,6 @@ class RequestTuitionController extends Controller
 
             $requestTuition = RequestTuition::create([
                 'member_id' => $groupMember->id,
-                'type_tuition_id' => $type->id,
                 'file' => $imagePath,
                 'nominal' => $request->nominal,
                 'remark' => $request->remark,
@@ -121,7 +128,7 @@ class RequestTuitionController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'request_tuition_id' => ['required', 'integer', 'exists:request_tuition,id'],
-                'status' => ['required', 'string', 'in:Accepted,Rejected,Canceled'],
+                'status' => ['required', 'string', 'in:Fully Approved,Rejected,Canceled'],
             ]);
 
             if ($validator->fails()) {
@@ -134,9 +141,10 @@ class RequestTuitionController extends Controller
             $data = $request->all();
             $requestTuition = RequestTuition::findOrFail($request->request_tuition_id);
 
-            if ($requestTuition->status != 'Pending') {
-                return ResponseFormatter::success([
-                    'message' => 'Request already responded'
+            if ($requestTuition->status != 'Waiting Approval') {
+                return ResponseFormatter::error([
+                    'message' => 'Request already responded',
+                    'error' => 'Request already responded',
                 ], 'Request already responded');
             }
 
