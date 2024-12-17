@@ -23,7 +23,7 @@ class RequestTuitionController extends Controller
                 'period'  => ['required', 'integer'],
                 'user_id' => ['nullable', 'integer', 'exists:users,id'],
                 'group_id' => ['nullable', 'integer', 'exists:groups,id'],
-                'status' => ['nullable', 'string', 'in:Accepted,Rejected,Canceled,Waiting Approval'],
+                'status' => ['nullable', 'string', 'in:Fully Approved,Rejected,Canceled,Waiting Approval'],
             ]);
 
             if ($validator->fails()) {
@@ -64,6 +64,35 @@ class RequestTuitionController extends Controller
                 'take' => $data->perPage(),
                 'total' => $data->total(),
                 'total_page' => ceil($data->total() / $data->perPage()),
+            ], 'Get Request Tuition Success!');
+        } catch (Exception $err) {
+            return ResponseFormatter::error([
+                'message' => $err->getMessage(),
+                'error' => $err->getMessage(),
+            ], $err->getMessage(), 500);
+        }
+    }
+
+    
+    public function getRequestTuitionById(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'request_tuition_id'  => ['required', 'integer'],
+            ]);
+
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => $validator->errors()->all(),
+                    'error' => $validator->errors()->all(),
+                ], 'Validation Error', 400);
+            }
+
+            $data = RequestTuition::with(['member.user', 'member.group'])->where('id', $request->request_tuition_id)->first();
+
+            return ResponseFormatter::success([
+                'data' => $data,
             ], 'Get Request Tuition Success!');
         } catch (Exception $err) {
             return ResponseFormatter::error([

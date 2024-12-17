@@ -8,6 +8,7 @@ use App\Http\Controllers\API\GroupNewsController;
 use App\Http\Controllers\API\GroupTuitionSettingController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\RequestTuitionController;
+use App\Http\Controllers\API\TuitionController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,8 +63,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('/request-tuition')->group(function () {
                 Route::get('/', [RequestTuitionController::class, 'getRequestTuition']);
+                Route::get('/id', [RequestTuitionController::class, 'getRequestTuitionById']);
                 Route::post('/store', [RequestTuitionController::class, 'storeRequestTuition']);
                 Route::post('/handle', [RequestTuitionController::class, 'handleRequestTuition']);
+            });
+
+            Route::prefix('/tuition')->group(function () {
+                Route::get('/member', [TuitionController::class, 'getTuitionByMemberId']);
+                Route::post('/store', [TuitionController::class, 'storeTuition']);
             });
         });
     });

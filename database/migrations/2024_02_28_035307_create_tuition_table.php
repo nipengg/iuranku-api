@@ -14,13 +14,16 @@ return new class extends Migration
         Schema::create('tuition', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('request_tuition_id');
+            $table->unsignedBigInteger('member_id');
+            $table->unsignedBigInteger('type_tuition_id');
             $table->integer('nominal');
-            $table->float('nominal_percentage', 2, 0);
             $table->date('period');
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('request_tuition_id')->references('id')->on('request_tuition');
+            $table->foreign('type_tuition_id')->references('id')->on('tuition_type');
+            $table->foreign('member_id')->references('id')->on('group_members');
         });
     }
 

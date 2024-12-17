@@ -14,11 +14,21 @@ class Tuition extends Model
     protected $table = "tuition";
     protected $fillable = [
         'request_tuition_id',
+        'member_id',
         'type_tuition_id',
         'nominal',
-        'nominal_percentage',
         'period',
     ];
+
+    public function requestTuition(): BelongsTo
+    {
+        return $this->belongsTo(RequestTuition::class, 'request_tuition_id', 'id');
+    }
+
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(GroupMember::class, 'member_id', 'id');
+    }
 
     public function typeTuition(): BelongsTo
     {
