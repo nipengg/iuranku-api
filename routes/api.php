@@ -70,6 +70,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
             Route::prefix('/tuition')->group(function () {
                 Route::get('/member', [TuitionController::class, 'getTuitionByMemberId']);
+                Route::get('/member/payment', [TuitionController::class, 'getTuitionPaymentMember']);
                 Route::get('/member/status', [TuitionController::class, 'getTuitionMember']);
                 Route::get('/member/detail', [TuitionController::class, 'getTuitionMemberDetail']);
                 Route::post('/store', [TuitionController::class, 'storeTuition']);

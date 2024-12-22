@@ -288,4 +288,91 @@ class TuitionController extends Controller
             ], $err->getMessage(), 500);
         }
     }
+
+    public function getTuitionPaymentMember(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'period'  => ['required', 'integer'],
+                'user_id' => ['required', 'integer', 'exists:users,id'],
+                'group_id' => ['required', 'integer', 'exists:groups,id'],
+                'type_tuition' => ['required', 'string', 'in:Kebersihan,Keamanan,Kematian'],
+            ]);
+
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => $validator->errors()->all(),
+                    'error' => $validator->errors()->all(),
+                ], 'Validation Error', 400);
+            }
+
+            $year = $request->period;
+
+            $groupMember = GroupMember::with(['user', 'group', 'member_type'])->where('user_id', $request->user_id)->where('group_id', $request->group_id)->where('status', 'Active')->first();
+
+            $type = TuitionType::where('tuition_name', $request->type_tuition)->first();
+
+            $monthlyStatus = [];
+            $tuitionStatus = [];
+            $tuitionSettings = GroupTuitionSetting::where('group_id', $groupMember->group_id)
+                ->where('type_tuition_id', $type->id)
+                ->where('tuition_period', $year)
+                ->first();
+
+            // If no tuition settings are found, set all months to false
+            if (!$tuitionSettings) {
+                foreach (range(1, 12) as $month) {
+                    $monthlyStatus[] = (object)[
+                        "month" => $month,
+                        "status" => false,
+                        "tuitionAmount" => 0,
+                        "paidAmount" => 0,
+                        "tuition" => [],
+                    ];
+                }
+
+                $tuitionStatus =  [
+                    'member' => $groupMember,
+                    'monthlyStatus' => $monthlyStatus,
+                ];
+            } else {
+                foreach (range(1, 12) as $month) {
+                    $monthPaid = Tuition::where('member_id', $groupMember->id)
+                        ->where('type_tuition_id', $type->id)
+                        ->whereYear('period', $year)
+                        ->whereMonth('period', $month)
+                        ->sum('nominal');
+
+                    $tuitionMonth = Tuition::with(['requestTuition', 'member'])->where('member_id', $groupMember->id)
+                        ->where('type_tuition_id', $type->id)
+                        ->whereYear('period', $year)
+                        ->whereMonth('period', $month)
+                        ->get();
+
+                    $monthlyStatus[] = (object)[
+                        "month" => $month,
+                        "status" => $monthPaid >= $tuitionSettings->tuition_value,
+                        "tuitionAmount" => $tuitionSettings->tuition_value,
+                        "paidAmount" => $monthPaid,
+                        "tuition" => $tuitionMonth,
+                    ];
+                }
+
+                $tuitionStatus = [
+                    'member' => $groupMember,
+                    'monthlyStatus' => $monthlyStatus,
+                ];
+            }
+
+            return ResponseFormatter::success([
+                'data' => $tuitionStatus,
+            ], 'Tuition processing completed.');
+        } catch (Exception $err) {
+            return ResponseFormatter::error([
+                'message' => $err->getMessage(),
+                'error' => $err->getMessage(),
+            ], $err->getMessage(), 500);
+        }
+    }
 }
