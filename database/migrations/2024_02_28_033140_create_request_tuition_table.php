@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('request_tuition', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('member_id');
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->integer('nominal');
             $table->string('remark');
             $table->enum('status', ['Waiting Approval', 'Rejected', 'Fully Approved', 'Canceled']);

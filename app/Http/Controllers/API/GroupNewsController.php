@@ -87,7 +87,7 @@ class GroupNewsController extends Controller
 
             if ($validator->fails()) {
                 return ResponseFormatter::error([
-                    'message' => 'Something went wrong..',
+                    'message' => $validator->errors()->all(),
                     'error' => $validator->errors()->all(),
                 ], 'Validation Error', 400);
             }
@@ -112,7 +112,7 @@ class GroupNewsController extends Controller
             ], 'Create Group News Success!');
         } catch (Exception $err) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong..',
+                'message' => $err->getMessage(),
                 'error' => $err->getMessage(),
             ], 'Something went wrong..', 500);
         }

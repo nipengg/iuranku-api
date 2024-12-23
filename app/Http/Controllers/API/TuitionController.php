@@ -177,7 +177,7 @@ class TuitionController extends Controller
 
             $dataPaginated = GroupMember::with('user', 'group', 'member_type')
                 ->where('group_id', $groupId)
-                ->paginate($request->take || 10);
+                ->paginate($request->take ?? 10);
 
             $data = collect($dataPaginated->items());
 
@@ -354,7 +354,7 @@ class TuitionController extends Controller
                         "month" => $month,
                         "status" => $monthPaid >= $tuitionSettings->tuition_value,
                         "tuitionAmount" => $tuitionSettings->tuition_value,
-                        "paidAmount" => $monthPaid,
+                        "paidAmount" => (int)$monthPaid,
                         "tuition" => $tuitionMonth,
                     ];
                 }

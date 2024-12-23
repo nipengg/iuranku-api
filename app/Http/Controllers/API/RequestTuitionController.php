@@ -37,7 +37,7 @@ class RequestTuitionController extends Controller
             // $month = date('m', strtotime($period));
             // $year = date('Y', strtotime($period));
 
-            $query = RequestTuition::with(['member.user', 'member.group'])->whereYear('created_at', $period);
+            $query = RequestTuition::with(['member.user', 'member.group', 'tuition', 'tuition.typeTuition'])->whereYear('created_at', $period);
 
             if ($request->filled('user_id')) {
                 $query->whereHas('member', function ($query) use ($request) {

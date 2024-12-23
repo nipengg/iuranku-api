@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('news_title');
             $table->longText('content');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('author_id');
             $table->unsignedBigInteger('group_id');
             $table->timestamps();
