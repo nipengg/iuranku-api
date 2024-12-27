@@ -95,8 +95,7 @@
         <div class="auth-fluid-right text-center">
             <div class="auth-user-testimonial">
                 <h2 class="mb-3">Welcome to Admin Panel Iuranku!</h2>
-                <p class="lead"><i class="mdi mdi-format-quote-open"></i>Dan sekarang semua rasa sudah gila, dan gila
-                    pun merasakan punya jiwa;<i class="mdi mdi-format-quote-close"></i>
+                <p class="lead"><i class="mdi mdi-format-quote-open"></i>Easier with us!<i class="mdi mdi-format-quote-close"></i>
                 </p>
                 <p>
                     - Iuranku
