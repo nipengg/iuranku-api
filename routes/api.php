@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('/news')->group(function () {
         Route::get('/', [NewsController::class, 'getNews']);
+        Route::get('/detail', [NewsController::class, 'getNewsById']);
     });
 
 

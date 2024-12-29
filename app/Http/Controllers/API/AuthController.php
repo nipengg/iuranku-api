@@ -97,7 +97,7 @@ class AuthController extends Controller
 
         } catch (Exception $err) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong..',
+                'message' => $err->getMessage(),
                 'error' => $err,
             ], 'Authentication Failed', 500);
         }
