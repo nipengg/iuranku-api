@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Your Email Address</title>
+    <title>Iuranku | Account Activated</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -65,13 +65,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Welcome to Iuranku!</h1>
+            <h1>Iuranku</h1>
         </div>
         <div class="content">
-            <p>Hello,</p>
-            <p>Thank you for signing up. Please confirm your email address to activate your account.</p>
-            <a href="{{ $url }}" class="button" style="text-decoration: none; color: #FFFFFF">Verify Email Address</a>
-            <p>If you did not create an account, no further action is required.</p>
+            <p>Thank you for signing up. Your account has been activated.</p>
         </div>
         <div class="footer">
             <p>&copy; {{ date('Y') }} Iuranku. All rights reserved.</p>

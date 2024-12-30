@@ -49,5 +49,7 @@ class AuthController extends Controller
                 event(new Verified($user));
             }
         }
+
+        return view('email.verified');
     }
 }

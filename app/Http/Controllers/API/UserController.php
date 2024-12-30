@@ -28,9 +28,9 @@ class UserController extends Controller
     public function editProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
+            'id' => 'required',
             'name' => 'required|max:50',
-            'phone' => 'required|max:12|unique:users,phone,' . $request->user_id,
+            'phone' => 'required|max:12|unique:users,phone,' . $request->id,
             'address' => 'required|max:250',
             'gender' => 'required',
             'address' => 'string|max:255',
@@ -38,13 +38,12 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong..',
+                'message' => $validator->errors()->all(),
                 'error' => $validator->errors()->all(),
             ], 'Validation Error', 400);
         }
 
-        $user = User::where('id', $request->user_id)->first();
-
+        $user = User::where('id', $request->id)->first();
         if ($user == null) {
             return ResponseFormatter::error([
                 'message' => 'User not Found',
@@ -53,7 +52,7 @@ class UserController extends Controller
         }
 
         try {
-            User::where('id', $request->user_id)->update([
+            User::where('id', $request->id)->update([
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'gender' => $request->gender,
@@ -65,7 +64,7 @@ class UserController extends Controller
             ], 'Success Update User Profile!');
         } catch (Exception $err) {
             return ResponseFormatter::error([
-                'message' => 'Something went wrong..',
+                'message' => $validator->errors()->all(),
                 'error' => $err,
             ], 'Something went wrong..', 500);
         }

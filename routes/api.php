@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\GroupApplicationController;
 use App\Http\Controllers\API\GroupController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\RequestTuitionController;
 use App\Http\Controllers\API\TuitionController;
 use App\Http\Controllers\API\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -19,7 +21,6 @@ Route::post('/login', [AuthController::class, 'login']);
 // Google
 Route::post('/googleOAuth', [AuthController::class, 'googleOAuth']);
 
-//
 Route::middleware(['auth:sanctum'])->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -29,6 +30,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [NewsController::class, 'getNews']);
         Route::get('/detail', [NewsController::class, 'getNewsById']);
     });
+
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+     
+        return ResponseFormatter::success([
+            'messages' => 'Email Verification Sent!'
+        ], 'Email Verification Sent!');;
+    })->name('verification.send');
 
 
     // Verified
@@ -80,7 +89,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // User
-    Route::put('/user/edit-profile', [AuthController::class, 'editProfile']);
+    Route::post('/user/edit-profile', [UserController::class, 'editProfile']);
     Route::middleware(['isadmin'])->group(function () {
         Route::prefix('/user')->group(function () {
             Route::get('/getUserList', [UserController::class, 'getUserList']);
