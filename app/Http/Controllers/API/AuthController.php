@@ -166,4 +166,13 @@ class AuthController extends Controller
             'groups' => $user->groups,
         ], 'Authenticated');
     }
+
+    public function sendEmailVerification(Request $request)
+    {
+        $request->user()->sendEmailVerificationNotification();
+     
+        return ResponseFormatter::success([
+            'messages' => 'Email Verification Sent!'
+        ], 'Email Verification Sent!');
+    }
 }

@@ -31,14 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/detail', [NewsController::class, 'getNewsById']);
     });
 
-    Route::post('/email/verification-notification', function (Request $request) {
-        $request->user()->sendEmailVerificationNotification();
-     
-        return ResponseFormatter::success([
-            'messages' => 'Email Verification Sent!'
-        ], 'Email Verification Sent!');;
-    })->name('verification.send');
-
+    Route::post('/email/verification-notification', [AuthController::class, 'sendEmailVerification'])->name('verification.send');
 
     // Verified
     Route::middleware(['verified'])->group(function () {
