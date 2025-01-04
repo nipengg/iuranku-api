@@ -44,7 +44,25 @@
                     </div>
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
-            <button class="btn btn-danger" style="width: 100%">Delete Group</button>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-modal" style="width: 100%">Delete Group</button>
+            <!-- Delete Modal -->
+            <div id="delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-body p-4">
+                            <form action="{{ route('admin.group.delete', Crypt::encryptString($data->id)) }}" method="POST">
+                                @csrf
+                                <div class="text-center">
+                                    <i class="dripicons-warning h1 text-danger"></i>
+                                    <h4 class="mt-2">Delete Confirmation</h4>
+                                    <p class="mt-3">Are you sure want to delete this data? this action can't be undone</p>
+                                    <button type="submit" class="btn btn-danger my-2" data-bs-dismiss="modal">Delete</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
         </div> <!-- end col-->
 
         <div class="col-xl-8 col-lg-7">

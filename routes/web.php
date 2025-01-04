@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update/{ids}', [UserController::class, 'update'])->name('admin.user.update');
             Route::post('/store', [UserController::class, 'store'])->name('admin.user.store');
             Route::post('/import', [UserController::class, 'importExcel'])->name('admin.import.excel');
+            Route::post('/delete/{ids}', [UserController::class, 'delete'])->name('admin.user.delete');
         });
 
         Route::prefix('/group')->group(function () {
@@ -51,13 +52,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{ids}', [GroupController::class, 'detail'])->name('admin.group.detail');
             Route::post('/update/{ids}', [GroupController::class, 'update'])->name('admin.group.update');
             Route::post('/store', [GroupController::class, 'store'])->name('admin.group.store');
+            Route::post('/delete/{ids}', [GroupController::class, 'delete'])->name('admin.group.delete');
         });
 
         Route::prefix('/news')->group(function () {
             Route::get('/', [NewsController::class, 'index'])->name('admin.news.index');
             Route::get('/create', [NewsController::class, 'create'])->name('admin.news.create');
             Route::get('/{ids}', [NewsController::class, 'detail'])->name('admin.news.detail');
+            Route::get('/edit/{ids}', [NewsController::class, 'edit'])->name('admin.news.edit');
+            Route::post('/update/{ids}', [NewsController::class, 'update'])->name('admin.news.update');
             Route::post('/store', [NewsController::class, 'store'])->name('admin.news.store');
+            Route::post('/delete/{ids}', [NewsController::class, 'delete'])->name('admin.news.delete');
         });
     });
 });

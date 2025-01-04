@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Imports\UsersImport;
 use App\Models\User;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -68,12 +69,12 @@ class UserController extends Controller
                     'email' => $data['email'],
                     'address' => $data['address'],
                     'password' => Hash::make($data['password']),
+                    'email_verified_at' => Carbon::now(),
                     'role' => $data['role'],
                 ]);
-                event(new Registered($user));
             });
-        } catch (\Throwable $th) {
-            Alert::html('Invalid Input', 'Something went wrong...', 'error');
+        } catch (Exception $err) {
+            Alert::html('Something went wrong...', $err->getMessage(), 'error');
             return redirect()->back()->withInput();
         }
 
@@ -132,8 +133,8 @@ class UserController extends Controller
                 'address' => $data['address'],
                 'role' => $data['role'],
             ]);
-        } catch (\Throwable $th) {
-            Alert::html('Invalid Input', 'Something went wrong...', 'error');
+        } catch (Exception $err) {
+            Alert::html('Something went wrong...', $err->getMessage(), 'error');
             return redirect()->back()->withInput();
         }
 
@@ -172,12 +173,14 @@ class UserController extends Controller
     public function delete($ids)
     {
         $id = Crypt::decryptString($ids);
-
-        $data = User::findOrFail($id);
-
-        $data->delete();
-
-        Alert::success('Delete User Success!', 'User Deleted');
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+        } catch (Exception $err) {
+            Alert::html('Invalid Input', $err->getMessage(), 'error');
+            return redirect()->back()->withInput();
+        }
+        Alert::success('Success!', 'User Deleted');
         return redirect()->route('admin.user.index');
     }
 }

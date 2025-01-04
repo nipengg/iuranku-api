@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\GroupMember;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -68,7 +69,7 @@ class GroupController extends Controller
                     'group_address' => $data['group_address'],
                     'user_in' => Auth::user()->id,
                 ]);
-    
+
                 foreach ($data['users'] as $item) {
                     GroupMember::create([
                         'user_id' => $item,
@@ -104,7 +105,7 @@ class GroupController extends Controller
     public function update(Request $request, $ids)
     {
         $data = $request->all();
-        $id  = Crypt::decryptString($ids);
+        $id = Crypt::decryptString($ids);
 
         $validator = Validator::make($request->all(), [
             'group_name' => 'required|max:250|string',
@@ -143,5 +144,19 @@ class GroupController extends Controller
 
         Alert::success('Success!', 'Group Updated');
         return redirect()->route('admin.group.detail', Crypt::encryptString($id));
+    }
+
+    public function delete($ids)
+    {
+        $id = Crypt::decryptString($ids);
+        try {
+            $group = Group::findOrFail($id);
+            $group->delete();
+        } catch (Exception $err) {
+            Alert::html('Invalid Input', $err->getMessage(), 'error');
+            return redirect()->back()->withInput();
+        }
+        Alert::success('Success!', 'Group Deleted');
+        return redirect()->route('admin.group.index');
     }
 }
