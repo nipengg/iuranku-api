@@ -37,7 +37,13 @@ class GroupTuitionSettingController extends Controller
                 throw new Exception("Invalid tuition type.");
             }
 
-            $data = GroupTuitionSetting::with(['group', 'typeTuition'])->where('group_id', $request->group_id)->where('type_tuition_id', $type->id)->where('tuition_period', $request->tuition_period)->first();
+            $data = GroupTuitionSetting::with(['group', 'typeTuition' => function ($query) use ($request) {
+                $query->withCount([
+                    'tuition as tuition_for_period_count' => function ($query) use ($request) {
+                        $query->whereYear('period', $request->tuition_period);
+                    }
+                ]);
+            }])->where('group_id', $request->group_id)->where('type_tuition_id', $type->id)->where('tuition_period', $request->tuition_period)->first();
 
             return ResponseFormatter::success([
                 'data' => $data,
