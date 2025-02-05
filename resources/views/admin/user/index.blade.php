@@ -10,7 +10,7 @@
                         data-bs-target="#standard-modal">Import Excel</button>
                     <div id="standard-modal" class="modal fade" tabindex="-1" role="dialog"
                         aria-labelledby="standard-modalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title" id="standard-modalLabel">Import Excel</h4>
@@ -25,6 +25,16 @@
                                         <div class="form-group">
                                             <input type="file" name="file" id="file" required>
                                         </div>
+                                        <hr>
+                                        Keterangan
+                                        <ol>
+                                            <li>Pastikan dokumen yang Anda upload menggunakan template yang benar. Template
+                                                dapat
+                                                didownload pada <a href="{{ asset('/assets/Template - User Upload.xlsx') }}"
+                                                    download="">tautan berikut ini.</a></li>
+                                            <li>File yang diupload harus berekstensi .xlsx </li>
+                                            
+                                        </ol>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
