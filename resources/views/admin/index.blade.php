@@ -65,10 +65,10 @@
                             <div class="float-end">
                                 <i class="mdi mdi-currency-usd widget-icon"></i>
                             </div>
-                            <h5 class="text-muted fw-normal mt-0" title="Average Revenue">Contribution</h5>
+                            <h5 class="text-muted fw-normal mt-0" title="Average Revenue">Fee</h5>
                             <h3 class="mt-3 mb-3">0</h3>
                             <p class="mb-0 text-muted">
-                                <span class="text-nowrap">All Total Contribution</span>
+                                <span class="text-nowrap">All Total Fee</span>
                             </p>
                         </div> <!-- end card-body-->
                     </div> <!-- end card-->
