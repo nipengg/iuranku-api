@@ -1,27 +1,14 @@
-![Final Project Backend Development 2022](public/logo_binus_resize.png "Final Project Backend Development 2022")
+![Iuranku](public/logo_binus_resize.png "Iuranku")
 
 Aplikasi Manajemen Iuran Berbasis Web untuk Pengelolaan Keuangan Warga - Iuranku
 
 <hr>
 
 ## Daftar Isi
-1. [Fitur](#fitur)
-2. [Instalasi](#instalasi)
+1. [Instalasi](#instalasi)
     - [Spesifikasi yang Dibutuhkan](#spesifikasi)
     - [Cara Install](#cara-install)
-3. [Screenshots](#screenshots)
-
-<hr>
-
-## Fitur
-
-Fitur pada Aplikasi ini meliputi:
-
-1. Akun Login
-    - Register Akun
-    - Login dan Logout User
-2. User
-    - Get User List
+2. [Screenshots](#screenshots)
 
 <hr>
 
